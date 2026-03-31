@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auth | Campus Market</title>
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .auth-container {
+      width: 100%;
+      max-width: 900px;
+      height: 600px;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .panel-brand {
+      width: 40%;
+      height: 100%;
+      background: var(--gradient);
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 20;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px;
+    }
+    
+    .auth-container.signup-mode .panel-brand {
+      transform: translateX(150%);
+    }
+
+    .panel-form {
+      width: 60%;
+      height: 100%;
+      background: var(--surface);
+      position: absolute;
+      top: 0;
+      padding: 48px;
+      overflow-y: auto;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .form-login {
+      right: 0;
+      opacity: 1;
+      transform: translateX(0);
+      z-index: 10;
+    }
+
+    .form-signup {
+      left: 0;
+      opacity: 0;
+      transform: translateX(-100%);
+      z-index: 1;
+    }
+
+    .auth-container.signup-mode .form-login {
+      opacity: 0;
+      transform: translateX(100%);
+      pointer-events: none;
+    }
+
+    .auth-container.signup-mode .form-signup {
+      opacity: 1;
+      transform: translateX(0);
+      z-index: 10;
+    }
+
+    .input-group {
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .input-group i {
+      position: absolute;
+      top: 14px;
+      left: 16px;
+      color: var(--muted);
+    }
+    .input-group input, .input-group select {
+      padding-left: 44px;
+    }
+    
+    .error-msg {
+      color: var(--error);
+      font-size: 0.75rem;
+      margin-top: 4px;
+      display: none;
+    }
+    .input-error { border-color: var(--error) !important; }
+    .input-success { border-color: var(--success) !important; }
+
+    @media (max-width: 768px) {
+      .panel-brand { display: none; }
+      .panel-form { width: 100%; }
+      .form-signup { transform: translateX(0) scale(0.95); display: none; }
+      .auth-container.signup-mode .form-login { display: none; }
+      .auth-container.signup-mode .form-signup { display: block; opacity: 1; transform: translateX(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-container glass" id="auth-container">
+    
+    <!-- BRANDING PANEL -->
+    <div class="panel-brand">
+      <h1 class="syne mb-2">CM</h1>
+      <h2 class="syne" id="brand-title">Welcome Back, Techimantian 👋</h2>
+      <p class="mt-2" style="font-size: 0.9rem; color: rgba(255,255,255,0.8);">Your Campus. Your Market.</p>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div class="panel-form form-login">
+      <h2 class="syne mb-1">Sign In</h2>
+      <div style="width: 40px; height: 3px; background: var(--gold); margin-bottom: 32px;"></div>
+      
+      <form id="login-form">
+        <div class="input-group">
+          <i class='bx bx-envelope'></i>
+          <input type="email" id="log-email" placeholder="yourname@st.knust.edu.gh" required>
+        </div>
+        <div class="input-group">
+          <i class='bx bx-lock-alt'></i>
+          <input type="password" id="log-password" placeholder="Password" required>
+        </div>
+        
+        <div style="text-align: right; margin-bottom: 24px;">
+          <a href="#" style="font-size: 0.85rem;">Forgot password?</a>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Sign In →</button>
+        
+        <div style="text-align: center; margin-top: 24px;">
+          <a href="#" id="toggle-signup" class="muted">New here? <span style="color: var(--purple);">Create account</span></a>
+        </div>
+      </form>
+    </div>
+
+    <!-- SIGNUP FORM -->
+    <div class="panel-form form-signup">
+      <h2 class="syne mb-1">Create Account</h2>
+      <div style="width: 40px; height: 3px; background: var(--teal); margin-bottom: 32px;"></div>
+      
+      <form id="signup-form">
+        <div class="input-group">
+          <i class='bx bx-user'></i>
+          <input type="text" id="reg-name" placeholder="Full Name" required>
+        </div>
+        
+        <div class="input-group">
+          <i class='bx bx-envelope'></i>
+          <input type="email" id="reg-email" placeholder="Student Email (@st.knust.edu.gh)" required>
+          <div class="error-msg" id="err-email">Must be a valid @st.knust.edu.gh email</div>
+        </div>
+
+        <div class="input-group">
+          <i class='bx bx-book-bookmark'></i>
+          <select id="reg-programme" required>
+            <option value="" disabled selected>Select Programme</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Engineering">Engineering</option>
+            <option value="Business">Business</option>
+            <option value="Agriculture">Agriculture</option>
+            <option value="Built Environment">Built Environment</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <i class='bx bx-phone'></i>
+          <input type="tel" id="reg-phone" placeholder="0XXXXXXXXX (Phone Number)" required>
+        </div>
+
+        <div class="input-group">
+          <i class='bx bx-lock-alt'></i>
+          <input type="password" id="reg-password" placeholder="Password (min 6 chars)" required minlength="6">
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 16px;">Create Account →</button>
+        
+        <div style="text-align: center; margin-top: 24px;">
+          <a href="#" id="toggle-login" class="muted">Already have an account? <span style="color: var(--purple);">Sign in</span></a>
+        </div>
+      </form>
+    </div>
+
+  </div>
+
+  <script src="js/app.js"></script>
+  <script>
+    const container = document.getElementById('auth-container');
+    const brandTitle = document.getElementById('brand-title');
+    
+    document.getElementById('toggle-signup').addEventListener('click', (e) => {
+      e.preventDefault();
+      container.classList.add('signup-mode');
+      brandTitle.innerText = "Join the Campus Market 🚀";
+    });
+    
+    document.getElementById('toggle-login').addEventListener('click', (e) => {
+      e.preventDefault();
+      container.classList.remove('signup-mode');
+      brandTitle.innerText = "Welcome Back, Techimantian 👋";
+    });
+
+    // Validations
+    const regEmail = document.getElementById('reg-email');
+    regEmail.addEventListener('input', () => {
+      if(regEmail.value.endsWith('@st.knust.edu.gh')) {
+        regEmail.classList.add('input-success');
+        regEmail.classList.remove('input-error');
+        document.getElementById('err-email').style.display = 'none';
+      } else {
+        regEmail.classList.add('input-error');
+        regEmail.classList.remove('input-success');
+        document.getElementById('err-email').style.display = 'block';
+      }
+    });
+
+    // Form Submits
+    document.getElementById('signup-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if(!regEmail.value.endsWith('@st.knust.edu.gh')) {
+        return showToast('Please use a valid KNUST student email.', 'error');
+      }
+      
+      const users = DB.getUsers();
+      if(users.find(u => u.email === regEmail.value)) {
+         return showToast('Email already registered!', 'error');
+      }
+
+      const user = {
+        id: generateId(),
+        name: document.getElementById('reg-name').value,
+        email: regEmail.value,
+        programme: document.getElementById('reg-programme').value,
+        phone: document.getElementById('reg-phone').value,
+        password: document.getElementById('reg-password').value,
+        profilePic: null, level: "", hall: "", bio: "",
+        createdAt: new Date().toISOString()
+      };
+
+      DB.saveUser(user);
+      localStorage.setItem("campusCurrentUser", JSON.stringify({id: user.id, name: user.name, email: user.email}));
+      sessionStorage.setItem("newSignup", "true");
+      window.location.href = "home.html";
+    });
+
+    document.getElementById('login-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('log-email').value;
+      const pass = document.getElementById('log-password').value;
+      
+      const user = DB.getUsers().find(u => u.email === email && u.password === pass);
+      if(user) {
+        localStorage.setItem("campusCurrentUser", JSON.stringify({id: user.id, name: user.name, email: user.email}));
+        window.location.href = "home.html";
+      } else {
+        showToast('Invalid email or password', 'error');
+      }
+    });
+
+    // If logged in already, redirect
+    if(DB.getCurrentUser()) {
+      window.location.href = "home.html";
+    }
+  </script>
+</body>
+</html>
