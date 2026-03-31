@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus Market | Buy & Sell at KNUST</title>
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Landing specific styles */
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      padding: 0 20px;
+    }
+    .hero h1 {
+      font-size: clamp(3rem, 8vw, 5rem);
+      line-height: 1.1;
+      letter-spacing: -2px;
+      margin: 20px 0;
+    }
+    .hero h1 span.gradient {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .badge-hero {
+      border: 1px solid var(--purple);
+      color: var(--purple);
+      background: rgba(108, 99, 255, 0.1);
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .stats-bar {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 32px 0;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .stat-item {
+      text-align: center;
+    }
+    .stat-item h3 {
+      font-size: 2rem;
+      color: var(--white);
+    }
+    .stat-item p {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    
+    .categories-row {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      padding-bottom: 20px;
+    }
+    .categories-row::-webkit-scrollbar { display: none; }
+    
+    .cat-box {
+      flex: 0 0 160px;
+      text-align: center;
+      padding: 24px;
+      text-decoration: none;
+    }
+    .cat-box .emoji {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+    }
+    .cat-box h4 { color: var(--white); margin-bottom: 4px; }
+    
+    .steps-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      text-align: center;
+    }
+    .step-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--surface-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin: 0 auto 16px;
+      color: var(--purple);
+    }
+    
+    footer {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      padding: 40px 5%;
+      text-align: center;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="logo">Campus<span>Market</span></a>
+    <div class="nav-actions" id="nav-actions">
+      <!-- Injected by app.js based on auth -->
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="badge-hero">🎓 Built for Techimantians</div>
+    <h1>Buy.<br>Sell.<br><span class="gradient">Connect.</span></h1>
+    <p class="muted mx-auto" style="max-width: 520px; margin-bottom: 32px; font-size: 1.1rem; line-height: 1.6;">
+      Campus Market is the smartest way for KNUST students to trade textbooks, electronics, services and more — all in one place.
+    </p>
+    <div class="d-flex align-center gap-2 mb-3">
+      <a href="auth.html" class="btn btn-primary">Start Selling</a>
+      <a href="auth.html" class="btn btn-outline glass" style="border-color: rgba(255,255,255,0.15); color: #fff;">Browse Listings</a>
+    </div>
+    <a href="auth.html" style="font-size: 0.9rem;">Already have an account? Sign in</a>
+  </section>
+
+  <section class="stats-bar">
+    <div class="stat-item">
+      <h3 class="syne">1,200+</h3>
+      <p>Students</p>
+    </div>
+    <div class="stat-item">
+      <h3 class="syne">5</h3>
+      <p>Categories</p>
+    </div>
+    <div class="stat-item">
+      <h3 class="syne">0 GHS</h3>
+      <p>Free to Use</p>
+    </div>
+  </section>
+
+  <section class="container">
+    <h2 class="syne mb-4" style="border-bottom: 2px solid var(--purple); display: inline-block; padding-bottom: 8px;">Browse by Category</h2>
+    <div class="categories-row">
+      <a href="auth.html" class="cat-box glass">
+        <div class="emoji">📚</div>
+        <h4>Textbooks</h4>
+      </a>
+      <a href="auth.html" class="cat-box glass">
+        <div class="emoji">💻</div>
+        <h4>Electronics</h4>
+      </a>
+      <a href="auth.html" class="cat-box glass">
+        <div class="emoji">🛠</div>
+        <h4>Services</h4>
+      </a>
+      <a href="auth.html" class="cat-box glass">
+        <div class="emoji">🏠</div>
+        <h4>Accommodation</h4>
+      </a>
+      <a href="auth.html" class="cat-box glass">
+        <div class="emoji">🔍</div>
+        <h4>Lost & Found</h4>
+      </a>
+    </div>
+  </section>
+
+  <section class="container" style="background: var(--surface); border-radius: var(--radius-lg); margin-top: 40px; margin-bottom: 60px;">
+    <h2 class="syne text-center mb-4">How It Works</h2>
+    <div class="steps-row">
+      <div>
+        <div class="step-icon"><i class='bx bx-user'></i></div>
+        <h4>1. Create Account</h4>
+        <p class="muted mt-1" style="font-size: 0.85rem;">Sign up with your KNUST student email.</p>
+      </div>
+      <div>
+        <div class="step-icon" style="color: var(--teal);"><i class='bx bx-camera'></i></div>
+        <h4>2. Post Your Item</h4>
+        <p class="muted mt-1" style="font-size: 0.85rem;">Take a photo, set a price, and describe it.</p>
+      </div>
+      <div>
+        <div class="step-icon" style="color: var(--gold);"><i class='bx bx-message-square-dots'></i></div>
+        <h4>3. Connect & Trade</h4>
+        <p class="muted mt-1" style="font-size: 0.85rem;">Chat with buyers/sellers safely on campus.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="syne" style="font-size: 1.2rem; color: #fff; margin-bottom: 8px;">Campus Market</div>
+    <p>Your Campus. Your Market.</p>
+    <div style="margin: 20px 0; border-top: 1px solid var(--border); padding-top: 20px;">
+      Made with ❤️ for KNUST students<br>
+      © 2026 Campus Market · Group 4 · KNUST Computer Science
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

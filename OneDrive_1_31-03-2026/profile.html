@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile | Campus Market</title>
+  <meta name="require-auth" content="true">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .profile-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      margin: 40px auto 20px;
+      max-width: 900px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 32px;
+      border: 1px solid var(--border);
+    }
+    
+    .profile-pic-area {
+      position: relative;
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      border: 3px solid var(--purple);
+      display: flex;
+      align-items: center; justify-content: center;
+      background: var(--surface-2);
+      font-size: 3rem; font-weight: bold;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .profile-pic-area img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .profile-pic-area .overlay {
+      position: absolute; top:0; left:0; width:100%; height:100%;
+      background: rgba(0,0,0,0.6);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: var(--transition);
+    }
+    .profile-pic-area:hover .overlay { opacity: 1; }
+
+    .tabs {
+      display: flex; gap: 32px; justify-content: center;
+      border-bottom: 1px solid var(--border);
+      max-width: 900px; margin: 0 auto 32px;
+    }
+    .tab {
+      padding: 12px 0;
+      cursor: pointer;
+      color: var(--muted);
+      border-bottom: 2px solid transparent;
+      transition: var(--transition);
+    }
+    .tab.active {
+      color: var(--white);
+      border-bottom-color: var(--purple);
+    }
+
+    .tab-content { display: none; max-width: 900px; margin: 0 auto; }
+    .tab-content.active { display: block; }
+
+    .my-listing-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      margin-bottom: 16px;
+    }
+    .my-listing-row img { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="home.html" class="logo">Campus<span>Market</span></a>
+    <div class="nav-actions" id="nav-actions"></div>
+  </nav>
+
+  <div class="container" style="padding-top: 0;">
+    <!-- PROFILE HEADER -->
+    <div class="profile-card glass">
+      <div class="d-flex align-center gap-2">
+        <label class="profile-pic-area" id="pic-area">
+          <span id="prof-initial">U</span>
+          <img id="prof-img">
+          <div class="overlay"><i class='bx bx-camera' style="font-size: 1.5rem;"></i></div>
+          <input type="file" id="pic-input" accept="image/*" style="display: none;">
+        </label>
+        <div>
+          <h2 class="syne" id="prof-name">User Name</h2>
+          <p class="muted mt-1" id="prof-prog">Programme</p>
+          <div class="badge badge-purple mt-2" id="prof-badge">KNUST Student</div>
+        </div>
+      </div>
+      
+      <div style="text-align: right;">
+        <div class="d-flex gap-2 mb-3">
+          <div class="text-center"><h3 class="syne" id="stat-posts">0</h3><div class="muted" style="font-size: 0.8rem;">Posts</div></div>
+        </div>
+        <button class="btn btn-outline" onclick="DB.logout()">Logout</button>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <div class="tab active" data-target="tab-account">Account Info</div>
+      <div class="tab" data-target="tab-listings">My Listings</div>
+    </div>
+
+    <!-- TAB 1: Account Info -->
+    <div class="tab-content active" id="tab-account">
+      <div class="glass" style="padding: 32px; max-width: 600px; margin: 0 auto; border-radius: var(--radius-lg);">
+        <form id="profile-form">
+          <div class="mb-3">
+            <label class="muted" style="font-size: 0.85rem; display: block; margin-bottom: 8px;">Full Name</label>
+            <input type="text" id="edit-name" required>
+          </div>
+          <div class="mb-3">
+            <label class="muted" style="font-size: 0.85rem; display: block; margin-bottom: 8px;">Email (Cannot change)</label>
+            <input type="email" id="edit-email" disabled>
+          </div>
+          <div class="mb-3">
+            <label class="muted" style="font-size: 0.85rem; display: block; margin-bottom: 8px;">Phone Number</label>
+            <input type="tel" id="edit-phone" required>
+          </div>
+          <div class="mb-3">
+            <label class="muted" style="font-size: 0.85rem; display: block; margin-bottom: 8px;">Bio (Optional)</label>
+            <textarea id="edit-bio" rows="3"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;">Save Changes</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- TAB 2: My Listings -->
+    <div class="tab-content" id="tab-listings">
+      <div id="my-list-container"></div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    const user = requireAuth();
+    let fullUser = DB.getUsers().find(u => u.id === user.id);
+
+    // Populate Top Card
+    document.getElementById('prof-name').innerText = fullUser.name;
+    document.getElementById('prof-prog').innerText = fullUser.programme;
+    document.getElementById('prof-initial').innerText = fullUser.name.charAt(0);
+    if(fullUser.profilePic) {
+      document.getElementById('prof-img').src = fullUser.profilePic;
+      document.getElementById('prof-img').style.display = 'block';
+      document.getElementById('prof-initial').style.display = 'none';
+    }
+
+    // Populate Form
+    document.getElementById('edit-name').value = fullUser.name;
+    document.getElementById('edit-email').value = fullUser.email;
+    document.getElementById('edit-phone').value = fullUser.phone;
+    document.getElementById('edit-bio').value = fullUser.bio || '';
+
+    // Pic Upload
+    document.getElementById('pic-input').addEventListener('change', async (e) => {
+      if(e.target.files[0]) {
+        try {
+          const b64 = await fileToBase64(e.target.files[0]);
+          fullUser.profilePic = b64;
+          DB.updateUser(fullUser);
+          document.getElementById('prof-img').src = b64;
+          document.getElementById('prof-img').style.display = 'block';
+          document.getElementById('prof-initial').style.display = 'none';
+          showToast('Profile picture updated!', 'success');
+        } catch(err) { showToast('Upload failed', 'error'); }
+      }
+    });
+
+    // Form Submit
+    document.getElementById('profile-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      fullUser.name = document.getElementById('edit-name').value;
+      fullUser.phone = document.getElementById('edit-phone').value;
+      fullUser.bio = document.getElementById('edit-bio').value;
+      DB.updateUser(fullUser);
+      document.getElementById('prof-name').innerText = fullUser.name;
+      showToast('Profile updated successfully!', 'success');
+    });
+
+    // Render My Listings
+    function renderMyListings() {
+      const all = DB.getListings();
+      const myItems = all.filter(l => l.sellerEmail === fullUser.email);
+      document.getElementById('stat-posts').innerText = myItems.length;
+      
+      const cont = document.getElementById('my-list-container');
+      cont.innerHTML = '';
+      if(myItems.length === 0) {
+        cont.innerHTML = '<div class="text-center muted mt-4">You haven\'t posted anything yet.</div>';
+        return;
+      }
+
+      myItems.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'my-listing-row glass';
+        div.innerHTML = `
+          <div class="d-flex align-center gap-2">
+            <img src="${item.image || 'https://via.placeholder.com/80'}" alt="">
+            <div>
+              <div style="font-weight: 600;">${item.title}</div>
+              <div class="price mt-1" style="font-size: 0.9rem;">GHS ${item.price || '--'}</div>
+              <div class="badge ${item.sold ? 'badge-teal' : 'badge-purple'} mt-1" style="display:inline-block">${item.sold ? 'SOLD' : 'AVAILABLE'}</div>
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            ${!item.sold ? `<button class="btn btn-outline btn-sm" onclick="markSold('${item.id}')">Mark Sold</button>` : ''}
+            <button class="btn btn-danger btn-sm" onclick="delItem('${item.id}')"><i class='bx bx-trash'></i></button>
+          </div>
+        `;
+        cont.appendChild(div);
+      });
+    }
+
+    window.markSold = (id) => {
+      const l = DB.getListings().find(x => x.id === id);
+      if(l) { l.sold = true; DB.updateListing(l); renderMyListings(); showToast('Marked as sold!'); }
+    };
+    window.delItem = (id) => {
+      if(confirm('Delete this item?')) { DB.deleteListing(id); renderMyListings(); showToast('Listing deleted'); }
+    }
+
+    renderMyListings();
+
+    // Tabs logic
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.getAttribute('data-target')).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
